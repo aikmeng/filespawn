@@ -1,0 +1,16 @@
+# Mac OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+
+# Poetry
+poetry.lock.bak
+poetry.lock-*
+
+# IDE / Editor
+.vscode/
+
+# pyenv
+.python-version
