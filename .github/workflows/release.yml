@@ -1,0 +1,21 @@
+  - name: Set up Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.13"
+
+  - name: Install Poetry
+    run: pipx install poetry==1.8.*
+
+  - name: Configure Poetry
+    run: |
+      poetry config virtualenvs.create false
+      poetry --version
+
+  - name: Install (if needed for build scripts)
+    run: poetry install --no-interaction --no-root
+
+  - name: Build wheel and sdist
+    run: poetry build
+
+  - name: Publish to PyPI via Trusted Publishing
+    uses: pypa/gh-action-pypi-publish@release/v1
