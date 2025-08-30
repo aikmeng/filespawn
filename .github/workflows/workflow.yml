@@ -1,37 +1,44 @@
-  name: Publish PyPI Repository
+name: Publish PyPI Repository
 
-  on: push
-  
-  jobs:
-    build:
-      environment: pypi
-      permissions:
-        id-token: write
-        contents: read      
-      name: Build distribution 📦
-      runs-on: ubuntu-latest
+on:
+  push:
+    tags:
+      - 'v*' # Publish on tags (e.g. v1.2.3)
 
-      steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-          allow-prereleases: true
+jobs:
+  build:
+    environment: pypi
+    permissions:
+      id-token: write # Required for trusted publishing
+      contents: read
+    name: Build and publish
+    runs-on: ubuntu-latest
 
-      - name: Install Poetry
-        run: pipx install poetry==2.1.4 && poetry --version
+    # This condition ensures the job only runs for tag pushes
+    if: startsWith(github.ref, 'refs/tags/')
 
-      - name: Configure Poetry (no venv)
-        run: poetry config virtualenvs.create false
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
-      - name: Install (if needed for build scripts)
-        run: poetry install --no-interaction --no-root
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+        allow-prereleases: true
 
-      - name: Build wheel and sdist
-        run: poetry build
+    - name: Install Poetry
+      run: pipx install poetry==2.1.4 && poetry --version
 
-      - name: Publish to PyPI via Trusted Publishing
-        uses: pypa/gh-action-pypi-publish@release/v1
+    - name: Configure Poetry (no venv)
+      run: poetry config virtualenvs.create false
+
+    - name: Install dependencies (if needed for build scripts)
+      run: poetry install --no-interaction --no-root
+
+    - name: Build wheel and sdist
+      run: poetry build
+
+    - name: Publish to PyPI via Trusted Publishing
+      uses: pypa/gh-action-pypi-publish@release/v1
