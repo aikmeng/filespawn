@@ -11,6 +11,12 @@ dependencies = [
 ]
 
 [tool.poetry]
+
+# Enable package mode so Poetry treats this as a buildable/distributable package (sdist/wheel).
+# Required when building/publishing via GitHub Actions and PyPI Trusted Publishing.
+# Keep all package metadata (name, version, description, authors) together in one table to satisfy package-mode validation.
+package-mode = true 
+
 packages = [{include = "filespawn", from = "src"}]
 
 [tool.poetry.scripts]
