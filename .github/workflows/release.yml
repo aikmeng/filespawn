@@ -1,21 +1,32 @@
-  - name: Set up Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.13"
+  name: Publish PyPI Repository
 
-  - name: Install Poetry
-    run: pipx install poetry==1.8.*
+  on: push
+  jobs:
+    build:
+      name: Build distribution 📦
+      runs-on: ubuntu-latest
 
-  - name: Configure Poetry
-    run: |
-      poetry config virtualenvs.create false
-      poetry --version
+      steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          allow-prereleases: true
 
-  - name: Install (if needed for build scripts)
-    run: poetry install --no-interaction --no-root
+      - name: Install Poetry
+        run: pipx install poetry==1.8.* && poetry --version
 
-  - name: Build wheel and sdist
-    run: poetry build
+      - name: Configure Poetry (no venv)
+        run: poetry config virtualenvs.create false
 
-  - name: Publish to PyPI via Trusted Publishing
-    uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Install (if needed for build scripts)
+        run: poetry install --no-interaction --no-root
+
+      - name: Build wheel and sdist
+        run: poetry build
+
+      - name: Publish to PyPI via Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
