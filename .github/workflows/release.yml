@@ -17,7 +17,7 @@
           allow-prereleases: true
 
       - name: Install Poetry
-        run: pipx install poetry==1.8.* && poetry --version
+        run: pipx install poetry==2.1.4 && poetry --version
 
       - name: Configure Poetry (no venv)
         run: poetry config virtualenvs.create false
